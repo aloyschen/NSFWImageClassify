@@ -127,7 +127,7 @@ def make_layer(inputs, filters, strides, blocks, name, training, data_format):
     return tf.identity(inputs, name)
 
 
-class Model:
+class ResNetModel:
     def __init__(self, block_sizes, num_classes, data_format = None):
         """
         Introduction
