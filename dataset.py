@@ -1,3 +1,4 @@
+# encoding:utf-8
 import os
 import math
 import random
@@ -15,7 +16,7 @@ class NSFWDataset():
         self.datasetDir = datasetDir
         self.mode = mode
         self._sess = tf.Session()
-        file_pattern = self.datasetDir + "/*" + self.mode + '.tfrecords'
+        file_pattern = os.path.join(self.datasetDir, self.mode) + '/tfrecords/*.tfrecord'
         self.tfRecord_file = tf.gfile.Glob(file_pattern)
         self._encode_image = tf.placeholder(tf.string)
         self._decode_jpeg = tf.image.decode_jpeg(self._encode_image, channels = 3)
@@ -82,8 +83,7 @@ class NSFWDataset():
             预处理之后的图片
         """
         if self.mode == 'train':
-            image = tf.image.resize_image_with_crop_or_pad(image, config.image_size + 8, config.image_size)
-            image = tf.image.random_crop(image, [config.image_size, config.image_size, 3])
+            image = tf.image.resize_image_with_crop_or_pad(image, config.image_size, config.image_size)
             image = tf.image.random_flip_left_right(image)
         # 对图片像素进行标准化，减去均值，除以方差
         image = tf.image.per_image_standardization(image)
@@ -107,22 +107,27 @@ class NSFWDataset():
         else:
             num_shards = 10
         num_per_shard = int(math.ceil(len(image_files) / float(num_shards)))
+        image_nums = 0
         for shard_id in range(num_shards):
-            output_filename = "nsfw_{}_{}_of_{}.tfrecord".format(self.mode, shard_id, num_shards)
+            output_filename = os.path.join(self.datasetDir, self.mode) + "/tfrecords/nsfw_{}_{}_of_{}.tfrecord".format(self.mode, shard_id, num_shards)
             with tf.python_io.TFRecordWriter(output_filename) as tfRecordWriter:
                 start_idx = shard_id * num_per_shard
                 end_idx = min((shard_id + 1) * num_per_shard, len(image_files))
                 for idx in range(start_idx, end_idx):
-                    print("converting image {}/{} shard {]".format(idx, len(image_files), shard_id))
-                    image_data = tf.gfile.FastGFile(image_files[idx], 'r').read()
-                    if ".png" in image_files[idx]:
-                        image = self._sess.run(self._decode_png, feed_dict = {self._encode_image : image_data})
-                        assert len(image.shape) == 3
-                        assert image.shape[2] == 3
-                    else:
-                        image = self._sess.run(self._decode_jpeg, feed_dict = {self._encode_image : image_data})
-                        assert len(image.shape) == 3
-                        assert image.shape[2] == 3
+                    print("converting image {}/{} shard {}".format(idx, len(image_files), shard_id))
+                    image_data = tf.gfile.FastGFile(image_files[idx], 'rb').read()
+                    # 数据可能有问题，若抛出异常则舍弃这条数据
+                    try:
+                        if image_files[idx].split('.')[-1] == 'png':
+                            image = self._sess.run(self._decode_png, feed_dict = {self._encode_image : image_data})
+                            assert len(image.shape) == 3
+                            assert image.shape[2] == 3
+                        else:
+                            image = self._sess.run(self._decode_jpeg, feed_dict = {self._encode_image : image_data})
+                            assert len(image.shape) == 3
+                            assert image.shape[2] == 3
+                    except Exception:
+                        continue
                     height, width = image.shape[0], image.shape[1]
                     classname = os.path.basename(os.path.dirname(image_files[idx]))
                     class_id = class_id_dict[classname]
@@ -131,9 +136,10 @@ class NSFWDataset():
                         'image/label' : self.int64_feature(class_id),
                         'image/height' : self.int64_feature(height),
                         'image/width' : self.int64_feature(width)
-                    } ))
+                    }))
                     tfRecordWriter.write(example.SerializeToString())
-            tfRecordWriter.close()
+                    image_nums += 1
+        print("所有数据集数量", image_nums)
 
 
     def Parse(self, serialized_example):
@@ -174,10 +180,11 @@ class NSFWDataset():
             num_epochs: 数据集训练的轮数
         """
         dataset = tf.data.TFRecordDataset(filenames = self.tfRecord_file)
-        dataset = dataset.prefetch(buffer_size = batch_size)
+        dataset = dataset.map(self.Parse, num_parallel_calls = 1)
+        dataset = dataset.batch(batch_size).prefetch(buffer_size = batch_size)
         if self.mode == 'train':
             dataset = dataset.shuffle(buffer_size = 500)
         dataset = dataset.repeat(num_epochs)
-        dataset = dataset.map(self.Parse, num_parallel_calls = 1)
+
         return dataset
 

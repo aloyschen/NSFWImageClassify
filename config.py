@@ -1,10 +1,9 @@
 batchNorm_momentum = 0.997
 batchNorm_epsilon = 1e-5
-block_sizes = [3, 4, 6, 3]
 image_size = 224
-train_images = 100000
-train_dir = "./data/train"
-eval_dir = "./data/eval"
+gpu_index = "0,1"
+train_images = 185008
+data_dir = "./data"
 model_dir = "./train_model"
 export_dir = "./export_model"
 train_batch_size = 12
