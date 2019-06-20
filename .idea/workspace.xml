@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="986734bc-82c6-4cfb-9f2a-48cdd9cc36ff" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/MobileNet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/ResNet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/MobileNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/MobileNet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,8 +17,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/ResNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-543">
-              <caret line="139" column="39" selection-start-line="139" selection-start-column="39" selection-end-line="139" selection-end-column="39" />
+            <state relative-caret-position="379">
+              <caret line="157" column="12" lean-forward="true" selection-start-line="157" selection-start-column="12" selection-end-line="158" selection-end-column="66" />
             </state>
           </provider>
         </entry>
@@ -35,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2703">
-              <caret line="46" column="75" lean-forward="true" selection-start-line="46" selection-start-column="75" selection-end-line="46" selection-end-column="75" />
+            <state relative-caret-position="276">
+              <caret line="58" column="14" selection-start-line="58" selection-start-column="14" selection-end-line="58" selection-end-column="14" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -47,14 +44,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/MobileNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="789">
-              <caret line="111" column="24" selection-start-line="111" selection-start-column="24" selection-end-line="111" selection-end-column="24" />
-              <folding>
-                <element signature="e#0#6#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="271">
+              <caret line="85" selection-start-line="85" selection-end-line="86" selection-end-column="64" />
             </state>
           </provider>
         </entry>
@@ -98,9 +92,9 @@
         <option value="$PROJECT_DIR$/dataset.py" />
         <option value="$PROJECT_DIR$/model.py" />
         <option value="$PROJECT_DIR$/models/ResNet.py" />
-        <option value="$PROJECT_DIR$/models/MobileNet.py" />
         <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/train.py" />
+        <option value="$PROJECT_DIR$/models/MobileNet.py" />
       </list>
     </option>
   </component>
@@ -248,18 +242,19 @@
       <workItem from="1560485703105" duration="6640000" />
       <workItem from="1560510618793" duration="423000" />
       <workItem from="1560738085171" duration="157000" />
-      <workItem from="1560825696789" duration="7459000" />
+      <workItem from="1560825696789" duration="9055000" />
+      <workItem from="1560843653076" duration="266000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63347000" />
+    <option name="totallyTimeSpent" value="65209000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15201466" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15384616" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -326,13 +321,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.pyenv/versions/3.7.3/lib/python3.7/site-packages/tensorflow/python/ops/nn_ops.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-725">
-          <caret line="2564" column="4" selection-start-line="2564" selection-start-column="4" selection-end-line="2564" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils.py" />
     <entry file="file://$USER_HOME$/.pyenv/versions/3.7.3/lib/python3.7/site-packages/tensorflow/python/training/basic_session_run_hooks.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -356,13 +344,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6408">
-          <caret line="182" column="65" selection-start-line="182" selection-start-column="65" selection-end-line="182" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.pyenv/versions/3.7.3/lib/python3.7/site-packages/tensorflow/python/keras/layers/convolutional.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4086">
@@ -377,10 +358,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/ResNet.py">
+    <entry file="file://$USER_HOME$/.pyenv/versions/3.7.3/lib/python3.7/site-packages/tensorflow/python/ops/losses/losses_impl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-543">
-          <caret line="139" column="39" selection-start-line="139" selection-start-column="39" selection-end-line="139" selection-end-column="39" />
+        <state relative-caret-position="-180">
+          <caret line="861" column="4" selection-start-line="861" selection-start-column="4" selection-end-line="861" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.pyenv/versions/3.7.3/lib/python3.7/site-packages/tensorflow/python/ops/nn_ops.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1074">
+          <caret line="2564" column="4" selection-start-line="2564" selection-start-column="4" selection-end-line="2564" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6408">
+          <caret line="182" column="65" selection-start-line="182" selection-start-column="65" selection-end-line="182" selection-end-column="65" />
         </state>
       </provider>
     </entry>
@@ -391,23 +386,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/MobileNet.py">
+    <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="789">
-          <caret line="111" column="24" selection-start-line="111" selection-start-column="24" selection-end-line="111" selection-end-column="24" />
+        <state relative-caret-position="276">
+          <caret line="58" column="14" selection-start-line="58" selection-start-column="14" selection-end-line="58" selection-end-column="14" />
           <folding>
-            <element signature="e#0#6#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/train.py">
+    <entry file="file://$PROJECT_DIR$/models/ResNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2703">
-          <caret line="46" column="75" lean-forward="true" selection-start-line="46" selection-start-column="75" selection-end-line="46" selection-end-column="75" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="379">
+          <caret line="157" column="12" lean-forward="true" selection-start-line="157" selection-start-column="12" selection-end-line="158" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/MobileNet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="85" selection-start-line="85" selection-end-line="86" selection-end-column="64" />
         </state>
       </provider>
     </entry>

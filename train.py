@@ -57,7 +57,7 @@ def Resnet_model_fn(features, labels, mode):
             export_outputs = {
                 'predict': tf.estimator.export.PredictOutput(predictions)
             })
-    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits = logits, labels = labels)
+    cross_entropy = tf.losses.sparse_softmax_cross_entropy(logits = logits, labels = labels)
     tf.summary.scalar("CrossEntropy", cross_entropy)
     vars = tf.trainable_variables()
     l2_loss = tf.add_n([ tf.nn.l2_loss(v) for v in vars ]) * config.weight_decay

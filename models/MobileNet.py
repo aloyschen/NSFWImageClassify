@@ -34,18 +34,18 @@ def InvertedResidual(inputs, expand_ratio, channels, stride, training, data_form
         data_format: 数据格式
     """
     if data_format == 'channels_first':
-        filters = expand_ratio * inputs.get_shape().as_list[1]
+        filters = expand_ratio * inputs.get_shape().as_list()[1]
     else:
-        filters = expand_ratio * inputs.get_shape().as_list[-1]
+        filters = expand_ratio * inputs.get_shape().as_list()[-1]
     output = inputs
     if expand_ratio != 1:
         # pw
         output = tf.layers.conv2d(output, filters, kernel_size = 1, strides = 1, padding = 'VALID', use_bias = False,
-                                  data_forma = data_format, kernel_initializer = tf.glorot_uniform_initializer())
+                                  data_format = data_format, kernel_initializer = tf.glorot_uniform_initializer())
         output = batch_norm(output, training, data_format)
         output = tf.nn.relu6(output)
     # dw
-    output = tf.layers.separable_conv2d(output, None, kernel_size = 3, strides = stride, padding = 'SAME', use_bias = False,
+    output = tf.layers.separable_conv2d(output, filters, kernel_size = 3, strides = stride, padding = 'SAME', use_bias = False,
                                data_format = data_format, depthwise_initializer = tf.glorot_uniform_initializer())
     output = batch_norm(output, training, data_format)
     output = tf.nn.relu6(output)
@@ -83,9 +83,11 @@ class MobileNetV2:
 
     def __call__(self, input, training):
         with tf.variable_scope("MobilenetV2"):
+            if self.data_format == "channels_first":
+                input = tf.transpose(input, perm = [0, 3, 1, 2])
             input = tf.layers.conv2d(input, filters = 32, kernel_size = 3, strides = 2, padding = "SAME", use_bias = False,
                                      data_format = self.data_format, kernel_initializer = tf.glorot_uniform_initializer())
-            input = batch_norm(input, training)
+            input = batch_norm(input, training, data_format = self.data_format)
             input = tf.nn.relu6(input)
             for t, c, n, s in self.inverted_residual_config:
                 for j in range(n):
@@ -98,7 +100,7 @@ class MobileNetV2:
 
             input = tf.layers.conv2d(input, filters = self.last_channels, kernel_size = 1, strides = 1, padding = "VALID", use_bias = False,
                                      data_format = self.data_format, kernel_initializer = tf.glorot_uniform_initializer())
-            input = batch_norm(input, training)
+            input = batch_norm(input, training, data_format = self.data_format)
             input = tf.nn.relu6(input)
 
             axis = [2, 3] if self.data_format == 'channels_first' else [1, 2]
