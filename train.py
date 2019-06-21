@@ -44,7 +44,7 @@ def Resnet_model_fn(features, labels, mode):
     """
     tf.summary.image('images', features, max_outputs = 6)
     # model = ResNetModel(config.num_classes, data_format = "channels_first")
-    model = MobileNetV2(config.num_classes, data_format = "channels_first")
+    model = MobileNetV2(config.num_classes, data_format = "channels_last")
     logits = model(features, mode == tf.estimator.ModeKeys.TRAIN)
     predictions = {
         'classes': tf.argmax(logits, axis = 1),
@@ -65,10 +65,11 @@ def Resnet_model_fn(features, labels, mode):
     tf.summary.scalar("loss", loss)
     if mode == tf.estimator.ModeKeys.TRAIN:
         global_step = tf.train.get_or_create_global_step()
-        learning_rate = learning_rate_with_decay(config.learning_rate, boundary_epochs=[30, 60, 80, 90], num_images = config.train_images,
-        batch_size = config.train_batch_size, decay_rates = config.decay_rates, global_step = global_step)
-        tf.summary.scalar("learning_rate", learning_rate)
-        optimizer = tf.train.MomentumOptimizer(learning_rate = learning_rate, momentum = config.momentum)
+        # learning_rate = learning_rate_with_decay(config.learning_rate, boundary_epochs=[30, 60, 80, 90], num_images = config.train_images,
+        # batch_size = config.train_batch_size, decay_rates = config.decay_rates, global_step = global_step)
+        # tf.summary.scalar("learning_rate", learning_rate)
+        # optimizer = tf.train.MomentumOptimizer(learning_rate = learning_rate, momentum = config.momentum)
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate = config.learning_rate)
         def _dense_grad_filter(gvs):
             """
             Introduction
@@ -134,7 +135,7 @@ def run():
             classifier.train(input_fn = lambda : input_function("train", config.data_dir, config.train_batch_size, num_train_epochs))
         tf.logging.info("start evaluate")
         eval_results = classifier.evaluate(input_fn = lambda : input_function("eval", config.data_dir, 1, 1))
-        print(eval_results)
+        print("evaluate result: ", eval_results)
     input_receiver_fn = build_tensor_serving_input_receiver_fn([config.image_size, config.image_size, 3])
     classifier.export_savedmodel(config.export_dir, input_receiver_fn)
 

@@ -1,6 +1,7 @@
 # encoding:utf-8
 import os
 import math
+import shutil
 import random
 import config
 import tensorflow as tf
@@ -16,14 +17,19 @@ class NSFWDataset():
         self.datasetDir = datasetDir
         self.mode = mode
         self._sess = tf.Session()
-        file_pattern = os.path.join(self.datasetDir, self.mode) + '/tfrecords/*.tfrecord'
-        self.tfRecord_file = tf.gfile.Glob(file_pattern)
+        # if not os.path.exists(os.path.join(self.datasetDir, self.mode, "tfrecords")):
+        #     os.mkdir(os.path.join(self.datasetDir, self.mode, "tfrecords"))
+        # file_pattern = os.path.join(self.datasetDir, self.mode) + '/tfrecords/*.tfrecord'
+        # self.tfRecord_file = tf.gfile.Glob(file_pattern)
         self._encode_image = tf.placeholder(tf.string)
         self._decode_jpeg = tf.image.decode_jpeg(self._encode_image, channels = 3)
         self._decode_png = tf.image.decode_png(self._encode_image, channels = 3)
-        if len(self.tfRecord_file) == 0:
-            self.convert_to_tfecord()
-            self.tfRecord_file = tf.gfile.Glob(file_pattern)
+        # if self.mode == "train":
+        #     self.convert_to_tfecord()
+        # else:
+        #     if len(file_pattern) == 0:
+        #         self.convert_to_tfecord()
+        # self.tfRecord_file = tf.gfile.Glob(file_pattern)
 
     def int64_feature(self, values):
         """
@@ -65,8 +71,11 @@ class NSFWDataset():
             path = os.path.join(root_path, filename)
             if os.path.isdir(path):
                 classes_name.append(filename)
+                per_classes = []
                 for imageFile in os.listdir(path):
-                    image_path.append(os.path.join(path, imageFile))
+                    per_classes.append(os.path.join(path, imageFile))
+                per_classes = random.sample(per_classes, config.perClass_num)
+                image_path = image_path + per_classes
         return image_path, sorted(classes_name)
 
 
@@ -98,12 +107,14 @@ class NSFWDataset():
         Parameters
         ----------
         """
+        # 先删除上轮随机抽取的训练数据
+        print("remove last train data")
+        shutil.rmtree(os.path.join(self.datasetDir, self.mode, "tfrecords"))
         image_files, classes = self._get_filenames_and_classes()
-        random.seed(0)
-        random.shuffle(image_files)
+        os.mkdir(os.path.join(self.datasetDir, self.mode, "tfrecords"))
         class_id_dict = dict(zip(classes, range(len(classes))))
         if self.mode == "train":
-            num_shards = 200
+            num_shards = 20
         else:
             num_shards = 10
         num_per_shard = int(math.ceil(len(image_files) / float(num_shards)))
@@ -142,7 +153,7 @@ class NSFWDataset():
         print("所有数据集数量", image_nums)
 
 
-    def Parse(self, serialized_example):
+    def parse_tfrecord(self, serialized_example):
         """
         Introduction
         ------------
@@ -169,6 +180,24 @@ class NSFWDataset():
         label = tf.cast(label, tf.int32)
         return image, label
 
+    def parse_image(self, filename, label):
+        """
+        Introduction
+        ------------
+            解析训练数据集
+        Parameters
+        ----------
+            filename: 图片文件
+            label: 图片标签
+        """
+        image_string = tf.read_file(filename)
+        image = tf.image.decode_jpeg(image_string)
+        image = self.PreProcessImage(image)
+        if self.mode != 'train':
+            image = tf.image.resize_images(image, [config.image_size, config.image_size])
+        return image, label
+
+
     def process_record_dataset(self, batch_size, num_epochs):
         """
         Introduction
@@ -179,8 +208,17 @@ class NSFWDataset():
             batch_size: 数据集每个batch的大小
             num_epochs: 数据集训练的轮数
         """
-        dataset = tf.data.TFRecordDataset(filenames = self.tfRecord_file)
-        dataset = dataset.map(self.Parse, num_parallel_calls = 1)
+        image_files, classes = self._get_filenames_and_classes()
+        class_id_dict = dict(zip(classes, range(len(classes))))
+        labels = []
+        for idx in range(len(image_files)):
+            classname = os.path.basename(os.path.dirname(image_files[idx]))
+            class_id = class_id_dict[classname]
+            labels.append(class_id)
+        dataset = tf.data.Dataset.from_tensor_slices((image_files, labels))
+        dataset = dataset.map(self.parse_image)
+        #dataset = tf.data.TFRecordDataset(filenames = self.tfRecord_file)
+        #dataset = dataset.map(self.parse, num_parallel_calls = 10)
         dataset = dataset.batch(batch_size).prefetch(buffer_size = batch_size)
         if self.mode == 'train':
             dataset = dataset.shuffle(buffer_size = 500)

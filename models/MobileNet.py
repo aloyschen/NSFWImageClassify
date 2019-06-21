@@ -103,11 +103,19 @@ class MobileNetV2:
             input = batch_norm(input, training, data_format = self.data_format)
             input = tf.nn.relu6(input)
 
-            axis = [2, 3] if self.data_format == 'channels_first' else [1, 2]
-            input = tf.reduce_mean(input, axis = axis)
-            input = tf.identity(input, 'final_reduce_mean')
-
+            # axis = [2, 3] if self.data_format == 'channels_first' else [1, 2]
+            # input = tf.reduce_mean(input, axis = axis)
+            # input = tf.identity(input, 'final_reduce_mean')
+            #
+            # input = tf.reshape(input, [-1, self.last_channels])
+            input = tf.layers.average_pooling2d(input, pool_size = 7, strides = 7, data_format = self.data_format)
             input = tf.reshape(input, [-1, self.last_channels])
+            input = tf.layers.dense(inputs = input, units = 256, kernel_initializer = tf.glorot_uniform_initializer())
+            input = tf.nn.relu(input)
+            input = tf.layers.dropout(input, rate = 0.5, training = training)
+            input = tf.layers.dense(inputs = input, units = 128, kernel_initializer = tf.glorot_uniform_initializer())
+            input = tf.nn.relu(input)
+            input = tf.layers.dropout(input, rate = 0.25, training = training)
             input = tf.layers.dense(inputs = input, units = self.num_classes)
             input = tf.identity(input, 'final_dense')
 
